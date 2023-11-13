@@ -5,38 +5,51 @@ from productosdepruebaporquesigosinbasededatos import productos
 
 
 class VentanaProductos(tk.Toplevel):
-    def __init__(vventas, root, *args, **kwargs):
+    def __init__(vventas, productos, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        vventas.root = root
-        vventas.root.title("Lista de Productos")
-        vventas.root.geometry("800x600")
-        vventas.root.resizable(False, False)
-        vventas.root.configure(bg="#f2f2f2")
+        vventas.title("Lista de Productos")
+        vventas.geometry("900x600")
+        vventas.resizable(False, False)
+        vventas.configure(bg="#f2f2f2")
 
-        style = ThemedStyle(vventas.root)
+        style = ThemedStyle(vventas)
         style.set_theme("clam")
         style.configure('TButton',borderwidth=1,relief="flat",background="#f2f2f2", width=12,font=("DejaVu Sans",10))
 
-        vventas.espacio_superior = tk.Frame(vventas.root, height=100, bg="light gray")
+        vventas.espacio_superior = tk.Frame(vventas, height=100, bg="light gray")
         vventas.espacio_superior.pack(fill="x")
 
-        vventas.espacio_derecho = tk.Frame(vventas.root, width=400, bg="light gray")
-        vventas.espacio_derecho.pack(side="right", fill="y")
-        vventas.espacio_derecho.label_total_productos = tk.Label(vventas.espacio_derecho, text=f"Total Productos: 0")
-        vventas.espacio_derecho.label_total_productos.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        vventas.espacio_derecho.label_total_precio = tk.Label(vventas.espacio_derecho, text=f"Total Precio: $0.00")
-        vventas.espacio_derecho.label_total_precio.grid(row=2, column=0, padx=10, pady=5, sticky="w")
-
-
-        vventas.espacio_izquierdo = tk.Frame(vventas.root, width=150, bg="light gray")
+        vventas.espacio_izquierdo = tk.Frame(vventas, width=150, bg="light gray")
         vventas.espacio_izquierdo.pack(side="left", fill="y")
-
-        vventas.canvas = tk.Canvas(vventas.root)
+        
+        vventas.canvas = tk.Canvas(vventas)
         vventas.canvas.pack(side="left", fill="both", expand=True)
         vventas.canvas.configure(bg="#f2f2f2")
-        vventas.scrollbar = ttk.Scrollbar(vventas.root, command=vventas.canvas.yview, orient="vertical", style="TScrollbar")
-        vventas.scrollbar.pack(side="right", fill="y")
+        vventas.scrollbar = ttk.Scrollbar(vventas, command=vventas.canvas.yview, orient="vertical", style="TScrollbar")
+        vventas.scrollbar.pack(side="left", fill="y")
         vventas.canvas.configure(yscrollcommand=vventas.scrollbar.set)
+
+
+        vventas.canvas_totales = tk.Canvas(vventas, bg="light gray", height=50)
+        vventas.canvas_totales.pack(side="bottom", fill="x",anchor="se")
+
+        vventas.canvas_totales.label_total_productos = tk.Label(vventas.canvas_totales, text=f"Total Productos: 0")
+        vventas.canvas_totales.label_total_productos.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        vventas.canvas_totales.label_total_precio = tk.Label(vventas.canvas_totales, text=f"Total Precio: $0.00")
+        vventas.canvas_totales.label_total_precio.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+
+        vventas.canvas_productos = tk.Canvas(vventas, width=400, bg="#f2f2f2")
+        vventas.canvas_productos.pack(side="right", fill="both", expand=True)
+        vventas.scrollbar_productos = ttk.Scrollbar(vventas, command=vventas.canvas_productos.yview, orient="vertical", style="TScrollbar")
+        vventas.scrollbar_productos.pack(side="right", fill="y")
+        vventas.canvas_productos.configure(yscrollcommand=vventas.scrollbar_productos.set)  # Configurar yscrollcommand aquí
+
+        vventas.canvas.configure(yscrollcommand=vventas.scrollbar.set)
+        vventas.scrollbar_productos.configure(command=vventas.canvas_productos.yview)
+        vventas.frame_productos = tk.Frame(vventas.canvas_productos, bg="#f2f2f2")
+        vventas.canvas_productos.create_window((0, 0), window=vventas.frame_productos, anchor="nw")
+
+
 
         vventas.frame = tk.Frame(vventas.canvas, bg="#f2f2f2")
         vventas.canvas.create_window((0, 0), window=vventas.frame, anchor="nw")
@@ -90,7 +103,10 @@ class VentanaProductos(tk.Toplevel):
             vventas.actualizar_lista_productos()
 
     def actualizar_lista_productos(vventas):
-        for widget in vventas.espacio_derecho.winfo_children():
+        for widget in vventas.canvas_productos.winfo_children():
+            widget.destroy()
+        
+        for widget in vventas.canvas_totales.winfo_children():
             widget.destroy()
 
         total_productos = 0
@@ -104,19 +120,19 @@ class VentanaProductos(tk.Toplevel):
             
             nombre_producto = vventas.productos[producto_id]["nombre"]
 
-            label_producto = tk.Label(vventas.espacio_derecho, text=f"{nombre_producto}: {cantidad}")
+            label_producto = tk.Label(vventas.canvas_productos, text=f"{nombre_producto}: {cantidad}")
             label_producto.grid(row=producto_id, column=0, padx=10, pady=5, sticky="w")
 
-            boton_restar = ttk.Button(vventas.espacio_derecho, text="-",width=4, command=lambda pid=producto_id: restar_producto(pid))
+            boton_restar = ttk.Button(vventas.canvas_productos, text="-",width=4, command=lambda pid=producto_id: restar_producto(pid))
             boton_restar.grid(row=producto_id, column=1, padx=5, pady=5, sticky="w")
             row += 1
 
-        label_total_productos = tk.Label(vventas.espacio_derecho, text=f"Total Productos: {total_productos}")
+        label_total_productos = tk.Label(vventas.canvas_totales, text=f"Total Productos: {total_productos}")
         label_total_productos.grid(row=row, column=0, padx=10, pady=5, sticky="w")
 
         row+=1
 
-        label_total_precio = tk.Label(vventas.espacio_derecho, text=f"Total Precio: ${total_precio:.2f}")
+        label_total_precio = tk.Label(vventas.canvas_totales, text=f"Total Precio: ${total_precio:.2f}")
         label_total_precio.grid(row=row, column=0, padx=10, pady=5, sticky="w")
 
         def restar_producto(producto_id):
@@ -127,7 +143,8 @@ class VentanaProductos(tk.Toplevel):
                 vventas.actualizar_lista_productos()
 
         
-        vventas.espacio_derecho.update()
+        vventas.frame_productos.update()
+
 
     def frame_conf(vventas, event):
         vventas.canvas.configure(scrollregion=vventas.canvas.bbox("all"))
@@ -136,7 +153,7 @@ class VentanaProductos(tk.Toplevel):
         altura_anterior = vventas.espacio_superior.winfo_height()
         nueva_altura = altura_anterior + r * 80
         vventas.espacio_superior.config(height=nueva_altura)
-        vventas.root.geometry(f"800x{500 + nueva_altura}")
+        vventas.geometry(f"900x{500 + nueva_altura}")
 
 if __name__ == "__main__":
     root = tk.Tk()

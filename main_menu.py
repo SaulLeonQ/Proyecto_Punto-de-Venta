@@ -2,6 +2,7 @@ import tkinter as tk
 from ventas import VentanaProductos
 from tkinter import ttk,PhotoImage
 from ttkthemes import ThemedStyle
+from productosdepruebaporquesigosinbasededatos import productos
 
 
 class MenuPrincipal(tk.Toplevel):
@@ -14,7 +15,6 @@ class MenuPrincipal(tk.Toplevel):
         style = ThemedStyle(mmenu)
         style.set_theme("clam")
         style.configure('TButton',borderwidth=1,relief="flat",background="#f2f2f2", width=12,font=("DejaVu Sans",20))        
-
 
         #CREACION DE LAS IMAGENES Y LABELS
         mmenu.imgRegProd = PhotoImage(file="resources/caja.png").subsample(8,8)
@@ -34,17 +34,11 @@ class MenuPrincipal(tk.Toplevel):
         lblReporte = tk.Label(mmenu, text="Reportes",foreground='black',font=("DejaVu Sans", 12))
         lblConsProd = tk.Label(mmenu, text="Consultar Producto",foreground='black',font=("DejaVu Sans", 12))
 
-        #def ventas():
-        #    ventana_principal = VentanaProductos(usuario, productos, mmenu)
-        #    ventana_principal.grab_set()  
-        #    mmenu.withdraw()
-
-
         #CREACION DE BOTONES
         btRegProd = ttk.Button(mmenu, image=mmenu.imgRegProd, style='TButton') #command=verificacion
         btRestInv = ttk.Button(mmenu, image=mmenu.imgRestInv, style='TButton') #command=verificacion
         btConsInv = ttk.Button(mmenu, image=mmenu.imgConsInv, style='TButton') #command=verificacion
-        btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton') #command=ventas
+        btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton', command=mmenu.ventas) #command=ventas
         btReporte = ttk.Button(mmenu, image=mmenu.imgReporte, style='TButton') #command=verificacion
         btConsProd = ttk.Button(mmenu, image=mmenu.imgConsProd, style='TButton') #command=verificacion
 
@@ -82,3 +76,8 @@ class MenuPrincipal(tk.Toplevel):
         lblConsProd.place(x=442,y=350)
 
         lbllogo.place(x=210,y=100)
+
+    def ventas(mmenu):
+            ventana_principal = VentanaProductos(productos, mmenu)
+            ventana_principal.grab_set()
+            mmenu.withdraw()
