@@ -42,14 +42,9 @@ class VentanaProductos(tk.Toplevel):
         vventas.canvas_productos.pack(side="right", fill="both", expand=True)
         vventas.scrollbar_productos = ttk.Scrollbar(vventas, command=vventas.canvas_productos.yview, orient="vertical", style="TScrollbar")
         vventas.scrollbar_productos.pack(side="right", fill="y")
-        vventas.canvas_productos.configure(yscrollcommand=vventas.scrollbar_productos.set)  # Configurar yscrollcommand aquí
-
-        vventas.canvas.configure(yscrollcommand=vventas.scrollbar.set)
-        vventas.scrollbar_productos.configure(command=vventas.canvas_productos.yview)
+        vventas.canvas_productos.configure(yscrollcommand=vventas.scrollbar_productos.set)
         vventas.frame_productos = tk.Frame(vventas.canvas_productos, bg="#f2f2f2")
         vventas.canvas_productos.create_window((0, 0), window=vventas.frame_productos, anchor="nw")
-
-
 
         vventas.frame = tk.Frame(vventas.canvas, bg="#f2f2f2")
         vventas.canvas.create_window((0, 0), window=vventas.frame, anchor="nw")
