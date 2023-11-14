@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, PhotoImage
 from ttkthemes import ThemedStyle
 from productosdepruebaporquesigosinbasededatos import productos
 
@@ -16,13 +16,15 @@ class VentanaProductos(tk.Toplevel):
         style.set_theme("clam")
         style.configure('TButton',borderwidth=1,relief="flat",background="#f2f2f2", width=12,font=("DejaVu Sans",10))
 
+        vventas.imgMenu = PhotoImage(file="resources/menu.png").subsample(8,8)
+
         vventas.espacio_superior = tk.Frame(vventas, height=100, bg="light gray")
         vventas.espacio_superior.pack(fill="x")
 
         vventas.espacio_izquierdo = tk.Frame(vventas, width=150, bg="light gray")
         vventas.espacio_izquierdo.pack(side="left", fill="y")
-        vventas.btn_cerrar = ttk.Button(vventas.espacio_izquierdo, text="Cerrar Ventana", command=vventas.cerrar_ventana)
-        vventas.btn_cerrar.pack(pady=10)
+        vventas.btn_cerrar = ttk.Button(vventas, image=vventas.imgMenu, command=vventas.cerrar_ventana)
+        vventas.btn_cerrar.place(x=10,y=10)
 
         
         vventas.canvas = tk.Canvas(vventas)
@@ -61,7 +63,7 @@ class VentanaProductos(tk.Toplevel):
         col = 0
         row = 0
         for tipo in tipos:
-            padx_left = 190 if col == 0 else 10
+            padx_left = 150 if col == 0 else 10
             boton_tipo = ttk.Button(vventas.espacio_superior, text=tipo, command=lambda t=tipo: vventas.crear_botones(t))
             boton_tipo.grid(row=row, column=col, padx=(padx_left, 10), pady=10)
             vventas.botones_tipos.append(boton_tipo)
