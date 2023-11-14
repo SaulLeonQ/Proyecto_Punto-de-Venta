@@ -21,6 +21,9 @@ class VentanaProductos(tk.Toplevel):
 
         vventas.espacio_izquierdo = tk.Frame(vventas, width=150, bg="light gray")
         vventas.espacio_izquierdo.pack(side="left", fill="y")
+        vventas.btn_cerrar = ttk.Button(vventas.espacio_izquierdo, text="Cerrar Ventana", command=vventas.cerrar_ventana)
+        vventas.btn_cerrar.pack(pady=10)
+
         
         vventas.canvas = tk.Canvas(vventas)
         vventas.canvas.pack(side="left", fill="both", expand=True)
@@ -149,6 +152,11 @@ class VentanaProductos(tk.Toplevel):
         nueva_altura = altura_anterior + r * 80
         vventas.espacio_superior.config(height=nueva_altura)
         vventas.geometry(f"900x{500 + nueva_altura}")
+
+    def cerrar_ventana(vventas):
+        vventas.grab_release()
+        vventas.destroy()
+        vventas.master.deiconify()
 
 if __name__ == "__main__":
     root = tk.Tk()
