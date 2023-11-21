@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, PhotoImage
 from ttkthemes import ThemedStyle
+from ventas_pago import VentasPago
 from productosdepruebaporquesigosinbasededatos import productos
 
 
@@ -40,7 +41,7 @@ class VentanaProductos(tk.Toplevel):
 
         vventas.canvas_totales.label_total_productos = tk.Label(vventas.canvas_totales, text=f"Total Productos: 0")
         vventas.canvas_totales.label_total_productos.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        vventas.canvas_totales.label_total_precio = tk.Label(vventas.canvas_totales, text=f"Total Precio: $0.00")
+        vventas.canvas_totales.label_total_precio = tk.Label(vventas.canvas_totales, text=f"Subtotal Precio: $0.00")
         vventas.canvas_totales.label_total_precio.grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
         vventas.canvas_productos = tk.Canvas(vventas, width=400, bg="#f2f2f2")
@@ -68,7 +69,7 @@ class VentanaProductos(tk.Toplevel):
             boton_tipo.grid(row=row, column=col, padx=(padx_left, 10), pady=10)
             vventas.botones_tipos.append(boton_tipo)
             col += 1
-            if col > 2:
+            if col > 4:
                 col = 0
                 row += 1
                 vventas.altura(row)
@@ -94,11 +95,11 @@ class VentanaProductos(tk.Toplevel):
                     col = 0
                     row += 1
 
-        def agregar_producto(nombre_producto,precio_producto):
-            if nombre_producto in vventas.productos_seleccionados:
-                vventas.productos_seleccionados[nombre_producto]["cantidad"] += 1
+        def agregar_producto(id_producto,precio_producto):
+            if id_producto in vventas.productos_seleccionados:
+                vventas.productos_seleccionados[id_producto]["cantidad"] += 1
             else:
-                vventas.productos_seleccionados[nombre_producto] = {"cantidad": 1, "precio": precio_producto}
+                vventas.productos_seleccionados[id_producto] = {"cantidad": 1, "precio": precio_producto}
 
             vventas.actualizar_lista_productos()
 
@@ -132,8 +133,15 @@ class VentanaProductos(tk.Toplevel):
 
         row+=1
 
-        label_total_precio = tk.Label(vventas.canvas_totales, text=f"Total Precio: ${total_precio:.2f}")
+        label_total_precio = tk.Label(vventas.canvas_totales, text=f"Subtotal Precio: ${total_precio:.2f}")
         label_total_precio.grid(row=row, column=0, padx=10, pady=5, sticky="w")
+
+        row+=1
+
+        boton_pagar = ttk.Button(vventas.canvas_totales, text="Pagar", command=vventas.pagar)
+        boton_pagar.grid(row=row, column=0, padx=10, pady=5, sticky="w")
+
+
 
         def restar_producto(producto_id):
             if producto_id in vventas.productos_seleccionados:
@@ -159,6 +167,13 @@ class VentanaProductos(tk.Toplevel):
         vventas.grab_release()
         vventas.destroy()
         vventas.master.deiconify()
+    
+    def pagar(vventas):
+        ventana_pago = VentasPago(vventas, productos_seleccionados=vventas.productos_seleccionados)
+        ventana_pago.transient(vventas)
+        ventana_pago.grab_set()
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
