@@ -1,5 +1,6 @@
 import tkinter as tk
 from ventas import VentanaProductos
+from consultar_producto import ConsultarProducto
 from tkinter import ttk,PhotoImage
 from ttkthemes import ThemedStyle
 from productosdepruebaporquesigosinbasededatos import productos
@@ -41,7 +42,7 @@ class MenuPrincipal(tk.Toplevel):
         btConsInv = ttk.Button(mmenu, image=mmenu.imgConsInv, style='TButton') #command=verificacion
         btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton', command=mmenu.ventas) #command=ventas
         btReporte = ttk.Button(mmenu, image=mmenu.imgReporte, style='TButton') #command=verificacion
-        btConsProd = ttk.Button(mmenu, image=mmenu.imgConsProd, style='TButton') #command=verificacion
+        btConsProd = ttk.Button(mmenu, image=mmenu.imgConsProd, style='TButton', command=mmenu.consultar_producto)
 
 
         #ACTIVACION DE BOTONES POR PERMISOS
@@ -89,6 +90,11 @@ class MenuPrincipal(tk.Toplevel):
 
 
     def ventas(mmenu):
-            ventana_principal = VentanaProductos(productos, mmenu)
-            ventana_principal.grab_set()
-            mmenu.withdraw()
+        ventana_principal = VentanaProductos(productos, mmenu)
+        ventana_principal.grab_set()
+        mmenu.withdraw()
+
+    def consultar_producto(mmenu):
+        ventana_principal = ConsultarProducto(productos, mmenu)
+        ventana_principal.grab_set()
+        mmenu.withdraw()
