@@ -31,7 +31,7 @@ class ConsultarProducto(tk.Toplevel):
         for id_producto, producto_info in cproduct.productos.items():
             nombre = producto_info["nombre"].lower()
             if busqueda in nombre:
-                cproduct.lista_productos.insert(tk.END, f"{nombre} - ${producto_info['precio']:.2f}")
+                cproduct.lista_productos.insert(tk.END, f"{nombre} - ${producto_info['precio']:.2f} - {producto_info['cantidad']}")
 
     def volver(cproduct):
         cproduct.grab_release()

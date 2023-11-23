@@ -39,7 +39,7 @@ class MenuPrincipal(tk.Toplevel):
         #CREACION DE BOTONES
         btCerrarSesion = ttk.Button(mmenu, text="Cerrar Sesión", style='TButton', command=mmenu.cerrar_sesion)
         btRegProd = ttk.Button(mmenu, image=mmenu.imgRegProd, style='TButton', command=mmenu.registrar_producto)
-        btRestInv = ttk.Button(mmenu, image=mmenu.imgRestInv, style='TButton') #command=verificacion
+        btRestInv = ttk.Button(mmenu, image=mmenu.imgRestInv, style='TButton') #seleccionar producto, establecer cantidad agregada y coste por la compra de esos productos ademas del proveedor
         btConsInv = ttk.Button(mmenu, image=mmenu.imgConsInv, style='TButton') #command=verificacion
         btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton', command=mmenu.ventas)
         btReporte = ttk.Button(mmenu, image=mmenu.imgReporte, style='TButton') #command=verificacion
