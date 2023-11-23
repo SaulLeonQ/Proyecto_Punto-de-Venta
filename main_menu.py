@@ -1,6 +1,7 @@
 import tkinter as tk
 from ventas import VentanaProductos
 from consultar_producto import ConsultarProducto
+from registro_producto import RegistroProductos
 from tkinter import ttk,PhotoImage
 from ttkthemes import ThemedStyle
 from productosdepruebaporquesigosinbasededatos import productos
@@ -37,10 +38,10 @@ class MenuPrincipal(tk.Toplevel):
 
         #CREACION DE BOTONES
         btCerrarSesion = ttk.Button(mmenu, text="Cerrar Sesión", style='TButton', command=mmenu.cerrar_sesion)
-        btRegProd = ttk.Button(mmenu, image=mmenu.imgRegProd, style='TButton') #command=verificacion
+        btRegProd = ttk.Button(mmenu, image=mmenu.imgRegProd, style='TButton', command=mmenu.registrar_producto)
         btRestInv = ttk.Button(mmenu, image=mmenu.imgRestInv, style='TButton') #command=verificacion
         btConsInv = ttk.Button(mmenu, image=mmenu.imgConsInv, style='TButton') #command=verificacion
-        btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton', command=mmenu.ventas) #command=ventas
+        btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton', command=mmenu.ventas)
         btReporte = ttk.Button(mmenu, image=mmenu.imgReporte, style='TButton') #command=verificacion
         btConsProd = ttk.Button(mmenu, image=mmenu.imgConsProd, style='TButton', command=mmenu.consultar_producto)
 
@@ -86,11 +87,14 @@ class MenuPrincipal(tk.Toplevel):
         mmenu.destroy()
         mmenu.master.deiconify()
 
-        
-
 
     def ventas(mmenu):
         ventana_principal = VentanaProductos(productos, mmenu)
+        ventana_principal.grab_set()
+        mmenu.withdraw()
+
+    def registrar_producto(mmenu):
+        ventana_principal = RegistroProductos(productos, mmenu)
         ventana_principal.grab_set()
         mmenu.withdraw()
 
