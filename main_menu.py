@@ -9,7 +9,7 @@ class MenuPrincipal(tk.Toplevel):
     def __init__(mmenu, usuario, tipo, *args, **kwargs):
         super().__init__(*args, **kwargs)
         mmenu.title("Sesión de {}".format(usuario))
-        mmenu.geometry("600x400")
+        mmenu.geometry("600x420")
         mmenu.resizable(False, False)
 
         style = ThemedStyle(mmenu)
@@ -35,6 +35,7 @@ class MenuPrincipal(tk.Toplevel):
         lblConsProd = tk.Label(mmenu, text="Consultar Producto",foreground='black',font=("DejaVu Sans", 12))
 
         #CREACION DE BOTONES
+        btCerrarSesion = ttk.Button(mmenu, text="Cerrar Sesión", style='TButton', command=mmenu.cerrar_sesion)
         btRegProd = ttk.Button(mmenu, image=mmenu.imgRegProd, style='TButton') #command=verificacion
         btRestInv = ttk.Button(mmenu, image=mmenu.imgRestInv, style='TButton') #command=verificacion
         btConsInv = ttk.Button(mmenu, image=mmenu.imgConsInv, style='TButton') #command=verificacion
@@ -57,25 +58,35 @@ class MenuPrincipal(tk.Toplevel):
 
 
         #POSICIONAMIENTO DE ELEMENTOS
-        btRegProd.place(x=57,y=50)
-        lblRegProd.place(x=22,y=130)
+        btCerrarSesion.place(x=1, y=1)
 
-        btRestInv.place(x=57,y=160)
-        lblRestInv.place(x=7,y=240)
+        btRegProd.place(x=57,y=70)
+        lblRegProd.place(x=22,y=150)
 
-        btConsInv.place(x=57,y=270)
-        lblConsInv.place(x=15,y=350)
+        btRestInv.place(x=57,y=180)
+        lblRestInv.place(x=7,y=260)
 
-        btComVent.place(x=482,y=50)
-        lblComVent.place(x=452,y=130)
+        btConsInv.place(x=57,y=290)
+        lblConsInv.place(x=15,y=370)
 
-        btReporte.place(x=482,y=160)
-        lblReporte.place(x=482,y=240)
+        btComVent.place(x=482,y=70)
+        lblComVent.place(x=452,y=150)
 
-        btConsProd.place(x=482,y=270)
-        lblConsProd.place(x=442,y=350)
+        btReporte.place(x=482,y=180)
+        lblReporte.place(x=482,y=260)
 
-        lbllogo.place(x=210,y=100)
+        btConsProd.place(x=482,y=290)
+        lblConsProd.place(x=442,y=370)
+
+        lbllogo.place(x=210,y=120)
+
+    def cerrar_sesion(mmenu):
+        mmenu.grab_release()
+        mmenu.destroy()
+        mmenu.master.deiconify()
+
+        
+
 
     def ventas(mmenu):
             ventana_principal = VentanaProductos(productos, mmenu)

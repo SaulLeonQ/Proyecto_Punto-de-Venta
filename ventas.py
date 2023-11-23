@@ -164,6 +164,9 @@ class VentanaProductos(tk.Toplevel):
         vventas.geometry(f"900x{500 + nueva_altura}")
 
     def cerrar_ventana(vventas):
+        style = ThemedStyle(vventas)
+        style.set_theme("clam")
+        style.configure('TButton',borderwidth=1,relief="flat",background="#f2f2f2", width=12,font=("DejaVu Sans",20))
         vventas.grab_release()
         vventas.destroy()
         vventas.master.deiconify()
