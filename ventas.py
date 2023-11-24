@@ -46,9 +46,6 @@ class VentanaProductos(tk.Toplevel):
 
         vventas.canvas_productos = tk.Canvas(vventas, width=400, bg="#f2f2f2")
         vventas.canvas_productos.pack(side="right", fill="both", expand=True)
-        vventas.scrollbar_productos = ttk.Scrollbar(vventas, command=vventas.canvas_productos.yview, orient="vertical", style="TScrollbar")
-        vventas.scrollbar_productos.pack(side="right", fill="y")
-        vventas.canvas_productos.configure(yscrollcommand=vventas.scrollbar_productos.set)
         vventas.frame_productos = tk.Frame(vventas.canvas_productos, bg="#f2f2f2")
         vventas.canvas_productos.create_window((0, 0), window=vventas.frame_productos, anchor="nw")
 
@@ -175,10 +172,6 @@ class VentanaProductos(tk.Toplevel):
         ventana_pago = VentasPago(vventas, productos_seleccionados=vventas.productos_seleccionados)
         ventana_pago.transient(vventas)
         ventana_pago.grab_set()
-
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    ventana = VentanaProductos(root, productos)
-    root.mainloop()
+        vventas.wait_window(ventana_pago)
+        vventas.productos_seleccionados = {}
+        vventas.actualizar_lista_productos()

@@ -73,6 +73,8 @@ class VentasPago(tk.Toplevel):
         )
         ventas_recibo.transient(vpago)
         ventas_recibo.grab_set()
+        vpago.wait_window(ventas_recibo)
+        vpago.destroy()
 
 
     def actualizar_lista_productos(vpago):

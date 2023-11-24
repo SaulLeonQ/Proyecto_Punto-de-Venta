@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedStyle
+from datetime import datetime
+from registrosdeventasporqueelchenuncavaahacerlabasededatosmellevalaverga import registros_ventas
 
 
 class VentasRecibo(tk.Toplevel):
@@ -35,25 +37,29 @@ class VentasRecibo(tk.Toplevel):
         vrecibo.mostrar_productos(canvas, productos_seleccionados, productos)
 
         ttk.Label(canvas2, style="EstiloA.TLabel", text="Número de venta:").grid(row=0, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Subtotal:").grid(row=1, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Total:").grid(row=2, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Efectivo:").grid(row=3, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Cambio:").grid(row=4, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Fecha:").grid(row=1, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Subtotal:").grid(row=2, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Total:").grid(row=3, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Efectivo:").grid(row=4, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Cambio:").grid(row=5, column=0, pady=5)
 
-        numero_venta = 1 
-        subtotal = subtotal
-        total = total
-        efectivo = total_dinero
-        cambio = efectivo - total
+        vrecibo.numero_venta = len(registros_ventas) + 1
+        vrecibo.fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        vrecibo.subtotal = subtotal
+        vrecibo.total = total
+        vrecibo.efectivo = total_dinero
+        vrecibo.cambio = vrecibo.efectivo - vrecibo.total
 
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=numero_venta).grid(row=0, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${subtotal:.2f}").grid(row=1, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${total:.2f}").grid(row=2, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${efectivo:.2f}").grid(row=3, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${cambio:.2f}").grid(row=4, column=1, pady=5)
+
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=vrecibo.numero_venta).grid(row=0, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=vrecibo.fecha_actual).grid(row=1, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.subtotal:.2f}").grid(row=2, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.total:.2f}").grid(row=3, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.efectivo:.2f}").grid(row=4, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.cambio:.2f}").grid(row=5, column=1, pady=5)
 
         ttk.Button(frame_botones, style="EstiloB.TButton", text="Anular venta", command=vrecibo.Anular).pack(pady=40)
-        ttk.Button(frame_botones, style="EstiloB.TButton", text="Cerrar", command=vrecibo.cerrar_recibo).pack(pady=40)
+        ttk.Button(frame_botones, style="EstiloB.TButton", text="Finalizar venta", command=lambda: vrecibo.cerrar_recibo(productos_seleccionados)).pack(pady=40)
 
 
     def mostrar_productos(vrecibo, canvas, productos_seleccionados, productos):
@@ -70,6 +76,18 @@ class VentasRecibo(tk.Toplevel):
     def Anular(vrecibo):
         vrecibo.destroy()
 
-    def cerrar_recibo(vrecibo):
+    def cerrar_recibo(vrecibo, productos_seleccionados):
+        for producto_id, info in productos_seleccionados.items():
+            nueva_venta = {
+                "Id_Venta": vrecibo.numero_venta,
+                "fecha": vrecibo.fecha_actual,
+                "id_producto": producto_id,
+                "id_cliente": None,
+                "cantidad": info["cantidad"],
+                "total": info["precio"]
+            }
+            registros_ventas.append(nueva_venta)
+
         vrecibo.destroy()
+
 
