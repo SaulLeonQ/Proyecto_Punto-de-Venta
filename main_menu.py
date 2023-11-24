@@ -106,7 +106,7 @@ class MenuPrincipal(tk.Toplevel):
         mmenu.withdraw()
 
     def reportes(mmenu):
-        ventana_principal = Reportes(mmenu)
+        ventana_principal = Reportes(productos, mmenu)
         ventana_principal.grab_set()
         mmenu.withdraw()
 

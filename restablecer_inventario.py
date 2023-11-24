@@ -5,91 +5,89 @@ from registrosdecomprasporquenotengobasededatos import registros_compras
 from proveedoresdepruebaporquechenuncavaahacerlabasededatos import proveedores
 
 class RestablecerInventario(tk.Toplevel):
-    def __init__(self, productos, *args, **kwargs):
+    def __init__(rinv, productos, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title("Restablecer Inventario")
-        self.geometry("300x400")
-        self.resizable(False, False)
+        rinv.title("Restablecer Inventario")
+        rinv.geometry("300x400")
+        rinv.resizable(False, False)
 
-        self.productos = productos
-        self.proveedores = proveedores
+        rinv.productos = productos
+        rinv.proveedores = proveedores
 
-        self.fecha_var = tk.StringVar()
-        self.producto_var = tk.StringVar()
-        self.proveedor_var = tk.StringVar()
-        self.cantidad_var = tk.StringVar()
-        self.total_var = tk.StringVar()
+        rinv.fecha_var = tk.StringVar()
+        rinv.producto_var = tk.StringVar()
+        rinv.proveedor_var = tk.StringVar()
+        rinv.cantidad_var = tk.StringVar()
+        rinv.total_var = tk.StringVar()
 
-        self.configurar_interfaz()
+        rinv.configurar_interfaz()
 
-    def configurar_interfaz(self):
-        lbl_fecha = tk.Label(self, text="Fecha:")
+    def configurar_interfaz(rinv):
+        lbl_fecha = tk.Label(rinv, text="Fecha:")
         lbl_fecha.grid(row=0, column=0, padx=10, pady=10, sticky="e")
-        entry_fecha = ttk.Entry(self, textvariable=self.fecha_var, state="readonly")
+        entry_fecha = ttk.Entry(rinv, textvariable=rinv.fecha_var, state="readonly")
         entry_fecha.grid(row=0, column=1, padx=10, pady=10)
-        self.fecha_var.set(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        rinv.fecha_var.set(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-        lbl_producto = tk.Label(self, text="Producto:")
+        lbl_producto = tk.Label(rinv, text="Producto:")
         lbl_producto.grid(row=1, column=0, padx=10, pady=10, sticky="e")
-        self.combo_producto = ttk.Combobox(self, textvariable=self.producto_var, state="readonly")
-        self.combo_producto.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
-        self.combo_producto.bind("<<ComboboxSelected>>", self.seleccionar_producto)
+        rinv.combo_producto = ttk.Combobox(rinv, textvariable=rinv.producto_var, state="readonly")
+        rinv.combo_producto.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
+        rinv.combo_producto.bind("<<ComboboxSelected>>", rinv.seleccionar_producto)
 
-        lbl_proveedor = tk.Label(self, text="Proveedor:")
+        lbl_proveedor = tk.Label(rinv, text="Proveedor:")
         lbl_proveedor.grid(row=2, column=0, padx=10, pady=10, sticky="e")
-        entry_proveedor = ttk.Entry(self, textvariable=self.proveedor_var, state="readonly")
+        entry_proveedor = ttk.Entry(rinv, textvariable=rinv.proveedor_var, state="readonly")
         entry_proveedor.grid(row=2, column=1, padx=10, pady=10)
 
-        lbl_cantidad = tk.Label(self, text="Cantidad:")
+        lbl_cantidad = tk.Label(rinv, text="Cantidad:")
         lbl_cantidad.grid(row=3, column=0, padx=10, pady=10, sticky="e")
-        entry_cantidad = ttk.Entry(self, textvariable=self.cantidad_var)
+        entry_cantidad = ttk.Entry(rinv, textvariable=rinv.cantidad_var)
         entry_cantidad.grid(row=3, column=1, padx=10, pady=10)
 
-        lbl_total = tk.Label(self, text="Total:")
+        lbl_total = tk.Label(rinv, text="Total:")
         lbl_total.grid(row=4, column=0, padx=10, pady=10, sticky="e")
-        entry_total = ttk.Entry(self, textvariable=self.total_var)
+        entry_total = ttk.Entry(rinv, textvariable=rinv.total_var)
         entry_total.grid(row=4, column=1, padx=10, pady=10)
 
-        btn_confirmar = ttk.Button(self, text="Confirmar", command=self.confirmar)
+        btn_confirmar = ttk.Button(rinv, text="Confirmar", command=rinv.confirmar)
         btn_confirmar.grid(row=5, column=0, columnspan=2, pady=10)
 
-        btn_volver = ttk.Button(self, text="Volver", command=self.volver)
+        btn_volver = ttk.Button(rinv, text="Volver", command=rinv.volver)
         btn_volver.grid(row=6, column=0, columnspan=2, pady=10)
 
-        self.lista_productos = [(f"{id_producto} - {producto['nombre']}") for id_producto, producto in self.productos.items()]
-        self.combo_producto["values"] = self.lista_productos
+        rinv.lista_productos = [(f"{id_producto} - {producto['nombre']}") for id_producto, producto in rinv.productos.items()]
+        rinv.combo_producto["values"] = rinv.lista_productos
 
-    def seleccionar_producto(self, event):
-        selected_product_id = int(self.combo_producto.get().split(" - ")[0])
-        self.producto_var.set(selected_product_id)
+    def seleccionar_producto(rinv, event):
+        selected_product_id = int(rinv.combo_producto.get().split(" - ")[0])
+        rinv.producto_var.set(selected_product_id)
     
-        proveedor_id = self.productos[selected_product_id]["proveedor"]
-    
-        proveedor_nombre = next((proveedor["nombre"] for proveedor in self.proveedores if proveedor["id"] == proveedor_id), "")
-    
-        self.proveedor_var.set(proveedor_nombre)
-        
-        self.selected_proveedor_id = proveedor_id
+        proveedor_id = rinv.productos[selected_product_id]["proveedor"]
 
+        proveedor_nombre = next((proveedor["nombre"] for proveedor in rinv.proveedores.values() if proveedor["id"] == proveedor_id), "")
 
+        rinv.proveedor_var.set(proveedor_nombre)
 
-    def confirmar(self):
+        rinv.selected_proveedor_id = proveedor_id
+
+    def confirmar(rinv):
         try:
-            cantidad = int(self.cantidad_var.get())
-            total = float(self.total_var.get())
-            id_producto = int(self.producto_var.get())
-            id_proveedor = self.selected_proveedor_id
+            cantidad = int(rinv.cantidad_var.get())
+            total = float(rinv.total_var.get())
+            id_producto = int(rinv.producto_var.get())
+            id_proveedor = rinv.selected_proveedor_id
         except ValueError:
             tk.messagebox.showerror("Error", "La cantidad y el total deben ser números.")
             return
 
-        if id_producto not in self.productos:
+        if id_producto not in rinv.productos:
             tk.messagebox.showerror("Error", "Producto no encontrado.")
             return
         
         id_venta = len(registros_compras) + 1
 
-        self.productos[id_producto]["cantidad"] += cantidad
+        rinv.productos[id_producto]["cantidad"] += cantidad
 
         registro = {
             "Id_Venta": id_venta,
@@ -101,14 +99,14 @@ class RestablecerInventario(tk.Toplevel):
         }
         registros_compras.append(registro)
 
-        self.producto_var.set("")
-        self.proveedor_var.set("")
-        self.cantidad_var.set("")
-        self.total_var.set("")
+        rinv.producto_var.set("")
+        rinv.proveedor_var.set("")
+        rinv.cantidad_var.set("")
+        rinv.total_var.set("")
     
-        self.fecha_var.set(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        rinv.fecha_var.set(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    def volver(self):
-        self.grab_release()
-        self.destroy()
-        self.master.deiconify()
+    def volver(rinv):
+        rinv.grab_release()
+        rinv.destroy()
+        rinv.master.deiconify()

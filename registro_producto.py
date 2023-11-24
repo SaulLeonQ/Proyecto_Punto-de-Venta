@@ -13,8 +13,9 @@ class RegistroProductos(tk.Toplevel):
         rprod.productos = productos
         rprod.producto_seleccionado = None
 
-        nombres_proveedores = [proveedor["nombre"] for proveedor in proveedores]
+        nombres_proveedores = [proveedor["nombre"] for proveedor in proveedores.values()]
         nombres_proveedores.insert(0, "Proveedor")
+
 
         lbl_id = tk.Label(rprod, text="ID:")
         lbl_id.grid(row=0, column=0, padx=10, pady=10, sticky="e")
@@ -83,7 +84,7 @@ class RegistroProductos(tk.Toplevel):
 
         nuevo_id = max(rprod.productos.keys()) + 1
 
-        id_proveedor = next((proveedor["id"] for proveedor in proveedores if proveedor["nombre"] == proveedor_seleccionado), None)
+        id_proveedor = next((prov["id"] for prov in proveedores.values() if prov["nombre"] == proveedor_seleccionado), None)
 
         rprod.productos[nuevo_id] = {"nombre": nombre, "precio": precio, "tipo": tipo, "cantidad": 0, "proveedor": id_proveedor}
         rprod.actualizar_lista_productos()
@@ -99,7 +100,7 @@ class RegistroProductos(tk.Toplevel):
             tipo = rprod.entry_tipo.get()
             proveedor_seleccionado = rprod.combo_proveedor.get()
 
-            id_proveedor = next((proveedor["id"] for proveedor in proveedores if proveedor["nombre"] == proveedor_seleccionado), None)
+            id_proveedor = next((proveedor["id"] for proveedor in proveedores.values() if proveedor["nombre"] == proveedor_seleccionado), None)
 
             rprod.productos[rprod.producto_seleccionado]["nombre"] = nombre
             rprod.productos[rprod.producto_seleccionado]["precio"] = precio
@@ -142,7 +143,7 @@ class RegistroProductos(tk.Toplevel):
             rprod.entry_tipo.insert(0, producto["tipo"])
 
             id_proveedor = producto["proveedor"]
-            nombre_proveedor = next((proveedor["nombre"] for proveedor in proveedores if proveedor["id"] == id_proveedor), "")
+            nombre_proveedor = next((prov["nombre"] for prov in proveedores.values() if prov["id"] == id_proveedor), "")
             rprod.combo_proveedor.set(nombre_proveedor)
 
             #rprod.habilitar_modificar()
@@ -164,7 +165,7 @@ class RegistroProductos(tk.Toplevel):
         rprod.lista_productos.delete(0, tk.END)
 
         for id_producto, producto_info in rprod.productos.items():
-            proveedor = next((prov["nombre"] for prov in proveedores if prov["id"] == rprod.productos[id_producto]["proveedor"]), "")
+            proveedor = next((prov["nombre"] for prov in proveedores.values() if prov["id"] == rprod.productos[id_producto]["proveedor"]), "")
             rprod.lista_productos.insert(tk.END, f"{id_producto} - {producto_info['nombre']} - {producto_info['precio']:.2f} - {proveedor}")
 
     def limpiar_campos_entrada(rprod):
