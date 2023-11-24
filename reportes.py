@@ -11,7 +11,8 @@ class Reportes(tk.Toplevel):
     def __init__(vrep, productos, *args, **kwargs):
         super().__init__(*args, **kwargs)
         vrep.title("Registros")
-        vrep.geometry("1200x600")
+        vrep.geometry("730x430")
+        vrep.resizable(False, False)
         style = ThemedStyle(vrep)
         style.configure('TButton',borderwidth=1,relief="flat",background="#f2f2f2", width=18,font=("DejaVu Sans",12))
         style.configure('FrameA.TFrame',background="#f2f2f2")
@@ -20,7 +21,7 @@ class Reportes(tk.Toplevel):
         vrep.proveedores = proveedores
 
         vrep.frame = ttk.Frame(vrep,width=220,height=160, style="FrameA.TFrame")
-        vrep.frame.place(x=492,y=0)
+        vrep.frame.place(x=504,y=0)
         vrep.frame.configure()
         
         btn_volver = ttk.Button(vrep, text="Volver", command=vrep.volver)
@@ -51,6 +52,7 @@ class Reportes(tk.Toplevel):
             vrep.tabla_inferior.heading(col, command=lambda c=col: vrep.column_sort(c, False))
             vrep.tabla_inferior.bind("<B1-Motion>", lambda event: "break")
 
+
         vrep.label_reporte = ttk.Label(vrep, text="Reporte del día",style="LabelQ.TLabel")
         vrep.label_ventas_brutas = ttk.Label(vrep, text="Ventas brutas: ",style="LabelQ.TLabel")
         vrep.label_compras_brutas = ttk.Label(vrep, text="Compras brutas: ",style="LabelQ.TLabel")
@@ -64,12 +66,16 @@ class Reportes(tk.Toplevel):
 
         vrep.tabla_inferior.grid(row=5, column=0, columnspan=4, padx=10, pady=10)
 
-        vrep.label_reporte.place(x=560,y=0)
-        vrep.label_ventas_brutas.place(x=517,y=20)
-        vrep.label_compras_brutas.place(x=504,y=40)
-        vrep.label_total.place(x=574,y=60)
-        vrep.label_ventas_totales.place(x=513,y=80)
-        vrep.label_compras_totales.place(x=500,y=100)
+        vrep.scrollbar_vertical = ttk.Scrollbar(vrep, command=vrep.tabla_inferior.yview)
+        vrep.scrollbar_vertical.grid(row=5, column=3, sticky='nse')
+        vrep.tabla_inferior.configure(yscrollcommand=vrep.scrollbar_vertical.set)
+
+        vrep.label_reporte.place(x=572,y=10)
+        vrep.label_ventas_brutas.place(x=529,y=40)
+        vrep.label_compras_brutas.place(x=516,y=60)
+        vrep.label_total.place(x=586,y=80)
+        vrep.label_ventas_totales.place(x=525,y=100)
+        vrep.label_compras_totales.place(x=512,y=120)
 
         vrep.ventas_brutas, vrep.compras_brutas, vrep.ventas_totales, vrep.compras_totales = vrep.calcular_totales()
         vrep.actualizar_etiquetas_totales()
