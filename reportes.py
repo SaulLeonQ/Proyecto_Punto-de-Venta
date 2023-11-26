@@ -150,16 +150,13 @@ class Reportes(tk.Toplevel):
         return datetime.strptime(fecha_str, "%Y-%m-%d %H:%M:%S")
     
     def calcular_totales(vrep):
-        # Obtener la fecha actual
         fecha_actual = datetime.now().date()
 
-        # Inicializar totales
         ventas_brutas = 0
         compras_brutas = 0
         ventas_totales = set()
         compras_totales = set()
 
-        # Calcular totales
         for venta in registros_ventas:
             fecha_venta = datetime.strptime(venta.get("fecha", ""), "%Y-%m-%d %H:%M:%S").date()
             if fecha_venta == fecha_actual:
@@ -172,13 +169,11 @@ class Reportes(tk.Toplevel):
                 compras_brutas += float(compra.get("total", ""))
                 compras_totales.add(compra.get("Id_Venta", ""))
 
-        # Calcular diferencia entre ventas y compras (total)
         total = ventas_brutas - compras_brutas
 
         return ventas_brutas, compras_brutas, len(ventas_totales), len(compras_totales)
 
     def actualizar_etiquetas_totales(vrep):
-        # Actualizar etiquetas con los nuevos totales
         vrep.label_ventas_brutas["text"] = f"Ventas brutas: {vrep.ventas_brutas}"
         vrep.label_compras_brutas["text"] = f"Compras brutas: {vrep.compras_brutas}"
         vrep.label_total["text"] = f"Total: {vrep.ventas_brutas - vrep.compras_brutas}"

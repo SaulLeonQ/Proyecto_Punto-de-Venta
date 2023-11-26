@@ -177,7 +177,7 @@ class RegistroProductos(tk.Toplevel):
         rprod.entry_tipo.delete(0, tk.END)
         rprod.combo_proveedor.set("")
 
-    def volver(cproduct):
-        cproduct.grab_release()
-        cproduct.destroy()
-        cproduct.master.deiconify()
+    def volver(rprod):
+        rprod.grab_release()
+        rprod.destroy()
+        rprod.master.deiconify()

@@ -3,6 +3,7 @@ from ventas import VentanaProductos
 from consultar_producto import ConsultarProducto
 from restablecer_inventario import RestablecerInventario
 from registro_producto import RegistroProductos
+from consultar_inventario import ConsultarInventario
 from reportes import Reportes
 from gestionc import GestionC
 from gestionp import GestionP
@@ -33,6 +34,7 @@ class MenuPrincipal(tk.Toplevel):
         mmenu.imgUsuario = PhotoImage(file="resources/usuarios.png").subsample(8,8)
         mmenu.imgCliente = PhotoImage(file="resources/clientes.png").subsample(8,8)
         mmenu.imgProveed = PhotoImage(file="resources/proveedores.png").subsample(8,8)
+        mmenu.imgSalir = PhotoImage(file="resources/menu.png").subsample(8,8)
 
         mmenu.Logo = PhotoImage(file="resources/Easyplus_Logo.png")
 
@@ -45,9 +47,11 @@ class MenuPrincipal(tk.Toplevel):
         lblComVent = tk.Label(mmenu, text="Comenzar Venta",foreground='black',font=("DejaVu Sans", 12))
         lblReporte = tk.Label(mmenu, text="Reportes",foreground='black',font=("DejaVu Sans", 12))
         lblConsProd = tk.Label(mmenu, text="Consultar Producto",foreground='black',font=("DejaVu Sans", 12))
+        lblConsInv = tk.Label(mmenu, text="Consultar Inventario",foreground='black',font=("DejaVu Sans", 12))
+        lblCerrar = tk.Label(mmenu, text="Cerrar Sesion",foreground='black',font=("DejaVu Sans", 12))
 
         #CREACION DE BOTONES
-        btCerrarSesion = ttk.Button(mmenu, text="Cerrar Sesión", style='TButton', command=mmenu.cerrar_sesion)
+        btCerrarSesion = ttk.Button(mmenu, image=mmenu.imgSalir, style='TButton', command=mmenu.cerrar_sesion)
         btRegProd = ttk.Button(mmenu, image=mmenu.imgRegProd, style='TButton', command=mmenu.registrar_producto)
         btRestInv = ttk.Button(mmenu, image=mmenu.imgRestInv, style='TButton', command=mmenu.restablecer_inventario)
         btGestionC = ttk.Button(mmenu, image=mmenu.imgCliente, style='TButton', command=mmenu.gestionC)
@@ -56,6 +60,7 @@ class MenuPrincipal(tk.Toplevel):
         btComVent = ttk.Button(mmenu, image=mmenu.imgComVent, style='TButton', command=mmenu.ventas)
         btReporte = ttk.Button(mmenu, image=mmenu.imgReporte, style='TButton', command=mmenu.reportes)
         btConsProd = ttk.Button(mmenu, image=mmenu.imgConProd, style='TButton', command=mmenu.consultar_producto)
+        btConsInv = ttk.Button(mmenu, image=mmenu.imgConsInv, style='TButton', command=mmenu.consultar_inventario)
 
 
         #ACTIVACION DE BOTONES POR PERMISOS
@@ -90,6 +95,9 @@ class MenuPrincipal(tk.Toplevel):
         btGestionP.place(x=57,y=380)
         lblGestP.place(x=0,y=460)
 
+        btConsInv.place(x=57,y=490)
+        lblConsInv.place(x=13,y=570)
+
         btComVent.place(x=482,y=50)
         lblComVent.place(x=452,y=130)
 
@@ -100,9 +108,12 @@ class MenuPrincipal(tk.Toplevel):
         lblConsProd.place(x=442,y=350)
 
         btGestionU.place(x=482,y=380)
-        lblGestU.place(x=442,y=460)
+        lblGestU.place(x=439,y=460)
 
-        lbllogo.place(x=210,y=100)
+        btCerrarSesion.place(x=482,y=490)
+        lblCerrar.place(x=462,y=570)
+
+        lbllogo.place(x=220,y=190)
 
     def cerrar_sesion(mmenu):
         mmenu.grab_release()
@@ -146,5 +157,10 @@ class MenuPrincipal(tk.Toplevel):
 
     def consultar_producto(mmenu):
         ventana_principal = ConsultarProducto(productos, mmenu)
+        ventana_principal.grab_set()
+        mmenu.withdraw()
+
+    def consultar_inventario(mmenu):
+        ventana_principal = ConsultarInventario(productos, mmenu)
         ventana_principal.grab_set()
         mmenu.withdraw()
