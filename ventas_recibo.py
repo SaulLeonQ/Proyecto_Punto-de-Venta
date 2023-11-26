@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedStyle
 from datetime import datetime
+from clientesdepruebaporquenuncavoyatenerbasededatos import clientes
 from registrosdeventasporqueelchenuncavaahacerlabasededatosmellevalaverga import registros_ventas
 
 
 class VentasRecibo(tk.Toplevel):
-    def __init__(vrecibo, master, productos_seleccionados, total_dinero, subtotal, total, productos):
+    def __init__(vrecibo, master, productos_seleccionados, total_dinero, subtotal, total, cliente_id, productos):
         super().__init__(master)
         vrecibo.title("Recibo")
         vrecibo.geometry("500x650")
@@ -38,13 +39,15 @@ class VentasRecibo(tk.Toplevel):
 
         ttk.Label(canvas2, style="EstiloA.TLabel", text="Número de venta:").grid(row=0, column=0, pady=5)
         ttk.Label(canvas2, style="EstiloA.TLabel", text="Fecha:").grid(row=1, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Subtotal:").grid(row=2, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Total:").grid(row=3, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Efectivo:").grid(row=4, column=0, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text="Cambio:").grid(row=5, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Cliente:").grid(row=2, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Subtotal:").grid(row=3, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Total:").grid(row=4, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Efectivo:").grid(row=5, column=0, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text="Cambio:").grid(row=6, column=0, pady=5)
 
         vrecibo.numero_venta = len(registros_ventas) + 1
         vrecibo.fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        vrecibo.cliente = cliente_id
         vrecibo.subtotal = subtotal
         vrecibo.total = total
         vrecibo.efectivo = total_dinero
@@ -53,13 +56,20 @@ class VentasRecibo(tk.Toplevel):
 
         ttk.Label(canvas2, style="EstiloA.TLabel", text=vrecibo.numero_venta).grid(row=0, column=1, pady=5)
         ttk.Label(canvas2, style="EstiloA.TLabel", text=vrecibo.fecha_actual).grid(row=1, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.subtotal:.2f}").grid(row=2, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.total:.2f}").grid(row=3, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.efectivo:.2f}").grid(row=4, column=1, pady=5)
-        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.cambio:.2f}").grid(row=5, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=vrecibo.obtener_nombre_cliente(cliente_id)).grid(row=2, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.subtotal:.2f}").grid(row=3, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.total:.2f}").grid(row=4, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.efectivo:.2f}").grid(row=5, column=1, pady=5)
+        ttk.Label(canvas2, style="EstiloA.TLabel", text=f"${vrecibo.cambio:.2f}").grid(row=6, column=1, pady=5)
 
         ttk.Button(frame_botones, style="EstiloB.TButton", text="Anular venta", command=vrecibo.Anular).pack(pady=40)
         ttk.Button(frame_botones, style="EstiloB.TButton", text="Finalizar venta", command=lambda: vrecibo.cerrar_recibo(productos_seleccionados)).pack(pady=40)
+
+    def obtener_nombre_cliente(vrecibo, cliente_id):
+        if cliente_id is not None:
+            return clientes[cliente_id]["nombre"]
+        else:
+            return "Cliente no seleccionado"
 
 
     def mostrar_productos(vrecibo, canvas, productos_seleccionados, productos):
@@ -82,7 +92,7 @@ class VentasRecibo(tk.Toplevel):
                 "Id_Venta": vrecibo.numero_venta,
                 "fecha": vrecibo.fecha_actual,
                 "id_producto": producto_id,
-                "id_cliente": None,
+                "id_cliente": vrecibo.cliente,
                 "cantidad": info["cantidad"],
                 "total": info["precio"]
             }

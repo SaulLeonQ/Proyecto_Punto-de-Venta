@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from ventas_recibo import VentasRecibo
+from clientesdepruebaporquenuncavoyatenerbasededatos import clientes
 
 
 class VentasPago(tk.Toplevel):
@@ -10,6 +11,9 @@ class VentasPago(tk.Toplevel):
         vpago.geometry("600x320")
         vpago.resizable(False, False)
 
+
+        vpago.clientesd = {cliente["id"]: cliente["nombre"] for cliente in clientes.values()}
+        vpago.clientesl = [f"{id_cliente} - {nombre_cliente}" for id_cliente, nombre_cliente in vpago.clientesd.items()]
         vpago.productos_seleccionados = productos_seleccionados
         vpago.total_dinero = 0.0
 
@@ -44,15 +48,23 @@ class VentasPago(tk.Toplevel):
 
         vpago.total = 0.0
         vpago.subtotal = 0.0
+        
+
+        vpago.label_cliente = ttk.Label(frame_labels, text="Cliente:")
+        vpago.label_cliente.pack(side="top", pady=5)
+        vpago.combobox_cliente = ttk.Combobox(frame_labels, values=[""] + vpago.clientesl, state="readonly")
+        vpago.combobox_cliente.pack(side="top", pady=5)
+        vpago.combobox_cliente.set("")
+
 
         vpago.label_subtotal = tk.Label(frame_labels, text="Subtotal: $0.00")
-        vpago.label_subtotal.pack(pady=10)
+        vpago.label_subtotal.pack(pady=5)
 
         vpago.label_total = tk.Label(frame_labels, text="Total: $0.00")
-        vpago.label_total.pack(pady=10)
+        vpago.label_total.pack(pady=5)
 
         vpago.label_pago_efectivo = tk.Label(frame_labels, text="Pago en efectivo: $0.00")
-        vpago.label_pago_efectivo.pack(pady=10)
+        vpago.label_pago_efectivo.pack(pady=5)
 
         vpago.boton_pagar = ttk.Button(frame_labels, text="Pagar", command=vpago.pagar)
         vpago.boton_pagar.pack(side="left", padx=10)
@@ -63,12 +75,16 @@ class VentasPago(tk.Toplevel):
 
 
     def pagar(vpago):
+        cliente_seleccionado = vpago.combobox_cliente.get()
+        cliente_id = None if cliente_seleccionado == "" else int(cliente_seleccionado.split("-")[0])
+
         ventas_recibo = VentasRecibo(
             vpago,
             productos_seleccionados=vpago.productos_seleccionados,
             total_dinero=vpago.total_dinero,
             subtotal=vpago.subtotal,
             total=vpago.total,
+            cliente_id=cliente_id,
             productos=vpago.master.productos
         )
         ventas_recibo.transient(vpago)
@@ -103,5 +119,3 @@ class VentasPago(tk.Toplevel):
     def sumar_dinero(vpago, monto):
         vpago.total_dinero += monto
         vpago.actualizar_lista_productos()
-
-

@@ -82,15 +82,16 @@ class VentanaProductos(tk.Toplevel):
         col = 0
         for producto_id, producto_info in vventas.productos.items():
             if producto_info["tipo"] == stipo:
-                nombre_producto = producto_info["nombre"]
-                precio_producto = producto_info["precio"]
-                boton = ttk.Button(vventas.frame, text=nombre_producto, width=20, command=lambda idp=producto_id, pp=precio_producto: agregar_producto(idp,pp))
-                boton.grid(row=row, column=col, padx=10, pady=10)
-                vventas.botones_productos.append(boton)
-                col += 1
-                if col > 1:
-                    col = 0
-                    row += 1
+                if producto_info["cantidad"] > 0:
+                    nombre_producto = producto_info["nombre"]
+                    precio_producto = producto_info["precio"]
+                    boton = ttk.Button(vventas.frame, text=nombre_producto, width=20, command=lambda idp=producto_id, pp=precio_producto: agregar_producto(idp,pp))
+                    boton.grid(row=row, column=col, padx=10, pady=10)
+                    vventas.botones_productos.append(boton)
+                    col += 1
+                    if col > 1:
+                        col = 0
+                        row += 1
 
         def agregar_producto(id_producto,precio_producto):
             if id_producto in vventas.productos_seleccionados:

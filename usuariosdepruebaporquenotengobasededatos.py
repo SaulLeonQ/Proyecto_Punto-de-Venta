@@ -1,5 +1,5 @@
-usuarios = {
-    "admin": {"contraseña": "123", "tipo": "administrador"},
-    "Pedrito": {"contraseña": "456", "tipo": "vendedor"},
-    "Carlitos": {"contraseña": "789", "tipo": "vendedor"},
-    }
+usuarios = [
+    {"ID":1,"nombre":"admin","contraseña": "123", "tipo": "administrador"},
+    {"ID":2,"nombre":"pedro","contraseña": "456", "tipo": "vendedor"},
+    {"ID":3,"nombre":"carlos","contraseña": "789", "tipo": "vendedor"},
+]

@@ -10,8 +10,8 @@ def verificacion():
     usuario = eusuario.get()
     contraseña = econtraseña.get()
 
-    if usuario in usuarios and usuarios[usuario]["contraseña"] == contraseña:
-        tipoU = usuarios[usuario]["tipo"]
+    if any(user["nombre"] == usuario for user in usuarios) and any(user["contraseña"] == contraseña for user in usuarios):
+        tipoU = next(user["tipo"] for user in usuarios if user["nombre"] == usuario)
         if tipoU == "administrador":
             ventana_principal = MenuPrincipal(usuario, tipoU, ventana)
             ventana_principal.grab_set()  
