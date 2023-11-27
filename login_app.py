@@ -38,8 +38,9 @@ def verificacion():
             result_vendedor = cursor.fetchone()
 
         if result_admin:
+            tipo = "administrador"
             tipoU = result_admin[0]
-            ventana_principal = MenuPrincipal(usuario, tipoU)
+            ventana_principal = MenuPrincipal(usuario, tipo)
             ventana_principal.grab_set()
             ventana.withdraw()
 
