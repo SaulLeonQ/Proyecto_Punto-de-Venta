@@ -1,29 +1,67 @@
 import tkinter as tk
 from tkinter import messagebox,ttk,PhotoImage
 from ttkthemes import ThemedStyle
-from usuariosdepruebaporquenotengobasededatos import usuarios
+import psycopg2
+
+
 from main_menu import MenuPrincipal
 
+#IMPLEMENTACION DE BD
+db_parametros = {
+    'dbname': 'bidoodkhl2srw9thnh6n',
+    'user': 'ug8l8c6wm3ggrmnn4xx1',
+    'password': 'boo9ZRBIYS6WttHzvrjF0uB9JEVuS4',
+    'host': 'bidoodkhl2srw9thnh6n-postgresql.services.clever-cloud.com',
+    'port': '50013',
+}
 
-#VERIFICACION DEL USUARIO
+# VERIFICACION DEL USUARIO
 def verificacion():
     usuario = eusuario.get()
     contraseña = econtraseña.get()
 
-    if any(user["nombre"] == usuario for user in usuarios) and any(user["contraseña"] == contraseña for user in usuarios):
-        tipoU = next(user["tipo"] for user in usuarios if user["nombre"] == usuario)
-        if tipoU == "administrador":
+    connection = None 
+    cursor = None
+
+    try:
+        # Conectar a la base de datos
+        connection = psycopg2.connect(**db_parametros)
+        cursor = connection.cursor()
+
+        # Consulta SQL para verificar al usuario en la tabla de administradores
+        cursor.execute("SELECT * FROM administrador WHERE admin_usuario = %s AND admin_contra = %s", (usuario, contraseña))
+        result_admin = cursor.fetchone()
+
+        # Consulta SQL para verificar al usuario en la tabla de clientes si no se encontró en administradores
+        if not result_admin:
+            cursor.execute("SELECT * FROM vendedor WHERE vendedor_usuario = %s AND vendedor_contra = %s", (usuario, contraseña))
+            result_vendedor = cursor.fetchone()
+
+        if result_admin:
+            tipoU = result_admin[0]
+            ventana_principal = MenuPrincipal(usuario, tipoU)
+            ventana_principal.grab_set()
+            ventana.withdraw()
+
+        elif result_vendedor:
+            tipoU = result_vendedor[0]
             ventana_principal = MenuPrincipal(usuario, tipoU, ventana)
             ventana_principal.grab_set()  
             ventana.withdraw()
 
-        elif tipoU == "vendedor":            
-            ventana_principal = MenuPrincipal(usuario, tipoU, ventana)
-            ventana_principal.grab_set()  
-            ventana.withdraw()
 
-    else:
-        messagebox.showerror("Nel", "No existe")
+        else:
+            messagebox.showerror("Error", "Usuario o contraseña incorrectos")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Error de conexión a la base de datos: {str(e)}")
+
+    finally:
+        # Cerrar cursor y conexión
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 #CREACION DE LA VENTANA
