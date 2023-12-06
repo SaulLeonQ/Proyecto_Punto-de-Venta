@@ -4,12 +4,11 @@ import psycopg2
 
 db_parametros = {
     'dbname': 'posbd',
-    'user': 'postgres',
-    'password': 'postgres',
-    'host': 'posproject.cyhwcmck3mea.us-east-2.rds.amazonaws.com',
+    'user': 'electrogalgos',
+    'password': 'tengomiedo',
+    'host': 'projectparra.cyhwcmck3mea.us-east-2.rds.amazonaws.com',
     'port': '5432',
 }
-
 class GestionP(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,11 +91,12 @@ class GestionP(tk.Toplevel):
 
             cursor.execute("UPDATE proveedores SET proveedor_nombre = %s,proveedor_contacto = %s, proveedor_telefono = %s WHERE proveedor_id = %s",
                            (nombre, contacto, telefono, proveedor_id))
+
             connection.commit()
 
             self.actualizar_lista_proveedores()
             self.limpiar_campos()
-            self.mostrar_mensaje("Proveedor modificado con ID: {}".format(proveedor_id))
+            self.mostrar_mensaje("Proveedor modificado")
 
         except psycopg2.Error as e:
             print("Error al modificar proveedor:", e)
@@ -109,11 +109,12 @@ class GestionP(tk.Toplevel):
             cursor = connection.cursor()
 
             cursor.execute("DELETE FROM proveedores WHERE proveedor_id = %s", (proveedor_id,))
+
             connection.commit()
 
             self.actualizar_lista_proveedores()
             self.limpiar_campos()
-            self.mostrar_mensaje("Proveedor eliminado con ID: {}".format(proveedor_id))
+            self.mostrar_mensaje("Proveedor eliminado")
 
         except psycopg2.Error as e:
             print("Error al eliminar proveedor:", e)

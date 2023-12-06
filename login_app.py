@@ -9,9 +9,9 @@ from main_menu import MenuPrincipal
 #IMPLEMENTACION DE BD
 db_parametros = {
     'dbname': 'posbd',
-    'user': 'postgres',
-    'password': 'postgres',
-    'host': 'posproject.cyhwcmck3mea.us-east-2.rds.amazonaws.com',
+    'user': 'electrogalgos',
+    'password': 'tengomiedo',
+    'host': 'projectparra.cyhwcmck3mea.us-east-2.rds.amazonaws.com',
     'port': '5432',
 }
 

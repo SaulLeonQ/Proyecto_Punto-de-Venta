@@ -1,6 +1,15 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from clientesdepruebaporquenuncavoyatenerbasededatos import clientes
+import psycopg2
+
+db_parametros = {
+    'dbname': 'posbd',
+    'user': 'electrogalgos',
+    'password': 'tengomiedo',
+    'host': 'projectparra.cyhwcmck3mea.us-east-2.rds.amazonaws.com',
+    'port': '5432',
+}
 
 class GestionC(tk.Toplevel):
     def __init__(gesc, *args, **kwargs):
@@ -38,51 +47,132 @@ class GestionC(tk.Toplevel):
 
 
     def agregar_cliente(gesc):
-        ultimo_id = max(clientes.keys(), default=0)
-        nuevo_id = ultimo_id + 1
+        nombre_cliente = gesc.nombre_entry.get()
 
-        nuevo_cliente = {
-            "id": nuevo_id,
-            "nombre": gesc.nombre_entry.get()
-        }
-        clientes[nuevo_cliente["id"]] = nuevo_cliente
-        gesc.actualizar_lista_clientes()
-        gesc.limpiar_campos()
+        try:
+            connection = psycopg2.connect(**db_parametros)
+            cursor = connection.cursor()
+
+            cursor.execute("INSERT INTO cliente (cliente_nombre) VALUES (%s) RETURNING cliente_id;", (nombre_cliente,))
+            nuevo_id = cursor.fetchone()[0]
+
+            connection.commit()
+
+            gesc.actualizar_lista_clientes()
+            gesc.limpiar_campos()
+            gesc.mostrar_mensaje("Cliente agregado con ID: {}".format(nuevo_id))
+
+
+        except psycopg2.Error as e:
+            print("Error al agregar cliente:", e)
+        finally:
+            if connection:
+                connection.close()
 
 
     def modificar_cliente(gesc):
-        cliente_id = int(gesc.id_entry.get().split(":")[0])
-        clientes[cliente_id]["nombre"] = gesc.nombre_entry.get()
-        gesc.actualizar_lista_clientes()
-        gesc.limpiar_campos()
+        cliente_id = gesc.id_entry.get()
+        nombre_cliente = gesc.nombre_entry.get()
+
+        try:
+            connection = psycopg2.connect(**db_parametros)
+            cursor = connection.cursor()
+
+            cursor.execute("UPDATE cliente SET cliente_nombre = %s WHERE cliente_id = %s;", (nombre_cliente, cliente_id))
+            connection.commit()
+            gesc.actualizar_lista_clientes()
+            gesc.limpiar_campos()
+            gesc.mostrar_mensaje("Cliente modificado")
+
+        except psycopg2.Error as e:
+            print("Error al modificar cliente:", e)
+        finally:
+            if connection:
+                connection.close()
 
 
     def eliminar_cliente(gesc):
-        cliente_id = int(gesc.id_entry.get().split(":")[0])
-        del clientes[cliente_id]
-        gesc.actualizar_lista_clientes()
-        gesc.limpiar_campos()
+        cliente_id = gesc.id_entry.get()
+
+        try:
+            connection = psycopg2.connect(**db_parametros)
+            cursor = connection.cursor()
+
+            cursor.execute("DELETE FROM cliente WHERE cliente_id = %s", (cliente_id,))
+
+            connection.commit()
+
+            gesc.actualizar_lista_clientes()
+            gesc.limpiar_campos()
+            gesc.mostrar_mensaje("Cliente eliminado")
+
+        except psycopg2.Error as e:
+            print("Error al eliminar cliente:", e)
+
+        finally:
+            if connection:
+                connection.close()
 
     def mostrar_datos_cliente(gesc, event):
-        seleccion = gesc.clientes_listbox.curselection()
-        if seleccion:
-            index = seleccion[0]
-            cliente_seleccionado = gesc.clientes_listbox.get(index)
-            cliente_id, cliente_nombre = cliente_seleccionado.split(":")
+     try:
+        seleccionado = gesc.clientes_listbox.curselection()
+
+        if seleccionado:
+            # Obtener el proveedor seleccionado
+            proveedor_seleccionado = gesc.clientes_listbox.get(seleccionado)
+
+            # Dividir la información del proveedor
+            partes = proveedor_seleccionado.split(", ")
+            
+            # Extraer los valores de las partes
+            cliente_id = partes[0].split(": ")[1]
+            cliente_nombre = partes[1].split(": ")[1]
+
+            # Actualizar las cajas de texto
             gesc.id_entry.config(state="normal")
             gesc.id_entry.delete(0, tk.END)
             gesc.id_entry.insert(0, cliente_id)
             gesc.id_entry.config(state="disabled")
+            
             gesc.nombre_entry.delete(0, tk.END)
-            gesc.nombre_entry.insert(0, cliente_nombre.strip())
+            gesc.nombre_entry.insert(0, cliente_nombre)
+
+            # Habilitar los botones de modificar y eliminar
             gesc.modificar_btn.config(state="normal")
             gesc.eliminar_btn.config(state="normal")
             gesc.agregar_btn.config(state="disabled")
 
+     except Exception as e:
+        print("Error al obtener datos del proveedor:", e)
+
+     finally:
+        # Siempre cerrar la conexión después de usarla
+        if 'connection' in locals() and connection:
+            connection.close()
+
     def actualizar_lista_clientes(gesc):
-        gesc.clientes_listbox.delete(0, tk.END)
-        for cliente_id, cliente_data in clientes.items():
-            gesc.clientes_listbox.insert(tk.END, f"{cliente_id}: {cliente_data['nombre']}")
+     def obtener_clientes():
+        try:
+            connection = psycopg2.connect(**db_parametros)
+            cursor = connection.cursor()
+
+            # Consultar todos los datos de proveedores
+            cursor.execute("SELECT * FROM cliente")
+            return cursor.fetchall()
+
+        except psycopg2.Error as e:
+            print("Error al obtener cliente:", e)
+            return None
+
+        finally:
+            if connection:
+                connection.close()
+     gesc.clientes_listbox.delete(0, tk.END)
+     clientes = obtener_clientes()
+     if clientes:
+        for clientes in clientes:
+            info_cliente = f"ID: {clientes[0]}, Nombre: {clientes[1]}"
+            gesc.clientes_listbox.insert(tk.END, info_cliente)
 
     def limpiar_campos(gesc):
         gesc.id_entry.config(state="normal")
@@ -97,3 +187,6 @@ class GestionC(tk.Toplevel):
         gesc.grab_release()
         gesc.destroy()
         gesc.master.deiconify()
+
+    def mostrar_mensaje(self, mensaje):
+        messagebox.showinfo("Mensaje", mensaje)  
