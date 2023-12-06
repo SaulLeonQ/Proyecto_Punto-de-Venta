@@ -8,11 +8,11 @@ from main_menu import MenuPrincipal
 
 #IMPLEMENTACION DE BD
 db_parametros = {
-    'dbname': 'bidoodkhl2srw9thnh6n',
-    'user': 'ug8l8c6wm3ggrmnn4xx1',
-    'password': 'boo9ZRBIYS6WttHzvrjF0uB9JEVuS4',
-    'host': 'bidoodkhl2srw9thnh6n-postgresql.services.clever-cloud.com',
-    'port': '50013',
+    'dbname': 'posbd',
+    'user': 'postgres',
+    'password': 'postgres',
+    'host': 'posproject.cyhwcmck3mea.us-east-2.rds.amazonaws.com',
+    'port': '5432',
 }
 
 # VERIFICACION DEL USUARIO
